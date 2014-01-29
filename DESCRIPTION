@@ -1,0 +1,10 @@
+Package: socialdefeat
+Type: Package
+Title: Methods for analyzing social defeat data
+Version: 0.1
+Date: 2014-01-23
+Author: Philip A Cook
+Maintainer: Philip A Cook <cookpa@mail.med.upenn.edu>
+Depends: cluster, mclust
+Description: Methods for analyzing social defeat data. Currently just a few functions for cluster analysis on average latency data. Requires the package mclust.
+License: GPL
