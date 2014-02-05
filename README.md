@@ -57,7 +57,7 @@ To check you've got the right path, do
 
 You should see
 
-> \> list.files(sdPath)
+> \> list.files(sdPath)  
 > [1] "DESCRIPTION" "man"         "NAMESPACE"   "R"           "README.md"  
 
 Now you are ready to install:
