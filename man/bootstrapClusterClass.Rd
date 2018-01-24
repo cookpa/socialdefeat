@@ -67,11 +67,16 @@ algorithm=c("kmeans", "hc", "pam"), emModelNames = "E")
   latency" (LL) with high stress resilience.
   
   The bootstrap resampling is done by sampling, with replacement, from
-  the SL and LL groups defined by the initial call to the k-means
+  the SL and LL groups defined by the initial call to the clustering
   algorithm on the original data. The proportion of SL and LL in each
   bootstrap remains fixed, unless restratify=TRUE, in which case an EM
   algorithm is used to define prior probabilities, and the
-  stratification is recomputed by sampling these priors at each bootstrap.
+  stratification is recomputed by sampling these priors at each
+  bootstrap.
+
+  The classification boundary for each bootstrap is the mid-point
+  between the two centroids / means. This boundary is used to
+  the classify the original latency data. 
 
   %%  ~~ If necessary, more details than the description above ~~
 }
@@ -84,10 +89,9 @@ algorithm=c("kmeans", "hc", "pam"), emModelNames = "E")
   \item{bootProbLL }{The probability that a subject is classified as LL,
     defined as the number of times this subject was classified LL over all
     bootstraps.}
-  \item{its }{The numbr of bootstrap iterations.}
-  \item{latency }{The object returned from the intial call to the
-    clustering algorithm on the original data. This contains the
-    baseline classification that is used to initialize the bootstraps.}
+  \item{its }{The number of bootstrap iterations.}
+  \item{latency }{The original latency data used for the original
+    classification and resampled for the bootstrap.}
   \item{boundary }{Approximate cluster boundary between SL and LL means
     (from kmeans or hc) or medoids (from pam) computed on the original
     data.}
@@ -95,26 +99,22 @@ algorithm=c("kmeans", "hc", "pam"), emModelNames = "E")
     bootstraps.}
   \item{centers }{Cluster centers or medoids fit to the original data.}
   \item{class_boot }{A matrix containing the classification of sample
-    data at each bootstrap. Not all data points are used in each
-    bootstrap, the classification has three values: 1 (SL), 2 (LL), and
-    0 (not used).} 
+    data at each bootstrap.} 
   \item{clusters }{The classification of the original data: 1 (SL), 2
     (LL).}
  
  The ordering of the per-subject values (such as bootProbLL) is the same
  as in the latency vector.
 
- The cluster boundaries are defined as halfway between the two data
- points either side of the SL / LL threshold. For small or
- well-separated data sets, the uncertainty in this boundary will be
- larger. 
+ The cluster boundaries are defined as halfway between the two cluster
+ means at each bootstrap.
 
 }
 \references{
 %% ~put references to the literature/web site here ~
 }
 \author{
-  Philip A Cook <cookpa@mail.med.upenn.edu>
+  Philip A Cook <cookpa@pennmedicine.upenn.edu>
 }
 \note{
 %%  ~~further notes~~

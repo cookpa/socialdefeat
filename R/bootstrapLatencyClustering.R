@@ -3,6 +3,8 @@ library(mclust)
 
 
 # Function to compute probability of LL from an Mclust object. Requires two Gaussian clusters
+# Probabilities returned by calling emProbLL(clusters, clusters$data) should be very similar to
+# LL class prob from clusters$z
 emProbLL <- function(clusters, latency) {
 
   if (clusters$parameters$variance$G != 2) {
@@ -235,7 +237,7 @@ plotBootstrapEM_Class <- function(bootClass, bootCurveAlpha = 0.05, subjectID = 
   par(mar = c(5,5,2,3))
   
   # Plot histogram of LL threshold
-  hist(bootClass$bootThreshLL, 25, xlim = c(200, 600), xlab = "Threshold average latency (s)", ylab = paste("Frequency (", its, " iterations)", sep = ""), lwd = 2, cex = 1.25, cex.axis = 1.5, cex.lab = 1.5, main = "Stress resilience classification threshold over all bootstraps")
+  hist(bootClass$bootThreshLL, 25, xlim = c(min(bootClass$bootThreshLL) - 10, max(bootClass$bootThreshLL) + 10), xlab = "Threshold average latency (s)", ylab = paste("Frequency (", its, " iterations)", sep = ""), lwd = 2, cex = 1.25, cex.axis = 1.5, cex.lab = 1.5, main = "Stress resilience classification threshold over all bootstraps")
 
   
   # Count number of times a subject is classified as LL, compare to prior EM probs
@@ -377,7 +379,8 @@ bootstrapClusterClass <- function(latency, its=1000, restratify=FALSE, algorithm
     
     bootLL <- sample(bootPriorLL, replace = TRUE)
     bootSL <- sample(bootPriorSL, replace = TRUE)
-    
+
+    # boot is a collection of indices to sample, latencies are latencies[boot]      
     boot <- c(bootLL, bootSL)
     
     centersBoot <- NULL
@@ -417,7 +420,7 @@ bootstrapClusterClass <- function(latency, its=1000, restratify=FALSE, algorithm
     
     LL_index <- 2
     
-    # Make sure clusters are correctly ordered
+    # Make sure clusters are correctly ordered, as classifier might put either one first
     if ( centersBoot[2] < centersBoot[1]) {
       LL_index <- 1
     }
@@ -429,14 +432,12 @@ bootstrapClusterClass <- function(latency, its=1000, restratify=FALSE, algorithm
     bootLL_Subj <- boot[which(clustersBoot == LL_index)]
     bootSL_Subj <- boot[which(clustersBoot == SL_index)]
 
-    # Always call LL group 2 and SL group 1 in k_class_boot
-    class_boot[bootLL_Subj,i] <- 2
-    class_boot[bootSL_Subj,i] <- 1
+    # Boundary is halfway between cluster means   
+    boundary_boot[i] <- (centersBoot[LL_index] + centersBoot[SL_index]) / 2
 
-    minLL <- min(latency[bootLL_Subj])
-    maxSL <- max(latency[bootSL_Subj])
-
-    boundary_boot[i] <- maxSL + (minLL - maxSL) / 2
+    # Here we enforce SL = 1, LL = 2
+    class_boot[,i] = as.numeric(latency > boundary_boot[i]) + 1
+       
     
   }
 
@@ -506,7 +507,7 @@ plotBootstrapClusterClass <- function(bootClass, bootBoundaryAlpha = 0.05, subje
   par(mar = c(5,5,2,3))
   
   # Plot results
-  hist(bootClass$boundary_boot, 25, xlim = c(200, 600), xlab = "Threshold average latency (s)", ylab = paste("Frequency (", its, " iterations)", sep = ""), lwd = 2, cex = 1.25, cex.axis = 1.5, cex.lab = 1.5, main = "Stress resilient cluster boundary over all bootstraps")
+  hist(bootClass$boundary_boot, 25, xlim = c(min(bootClass$boundary_boot) - 10, max(bootClass$boundary_boot) + 10), xlab = "Threshold average latency (s)", ylab = paste("Frequency (", its, " iterations)", sep = ""), lwd = 2, cex = 1.25, cex.axis = 1.5, cex.lab = 1.5, main = "Stress resilient cluster boundary over all bootstraps")
 
   
  

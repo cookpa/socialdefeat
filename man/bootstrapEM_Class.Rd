@@ -121,7 +121,7 @@ bootstrapEM_Class(latency, its = 1000, restratify = FALSE, modelNames = "E")
 %% ~put references to the literature/web site here ~
 }
 \author{
-  Philip A Cook <cookpa@mail.med.upenn.edu>
+  Philip A Cook <cookpa@pennmedicine.upenn.edu>
 }
 \note{
 %%  ~~further notes~~

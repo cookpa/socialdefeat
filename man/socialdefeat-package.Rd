@@ -32,13 +32,16 @@ Package for analyzing social defeat data
   are also provided.
 
   See \code{bootstrapClusterClass} and \code{bootstrapEM_Class} for
-  executable examples.
+  executable examples. These are just examples to play with using
+  dummy data, see the function documentation for recommended
+  parameters.
+  
 
 }
 \author{
   Philip A Cook
   
-  Maintainer: Philip A Cook <cookpa@mail.med.upenn.edu>
+  Maintainer: Philip A Cook <cookpa@pennmedicine.upenn.edu>
 }
 \references{
   

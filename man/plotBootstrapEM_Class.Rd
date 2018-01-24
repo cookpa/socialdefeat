@@ -86,7 +86,7 @@ plotBootstrapEM_Class(bootClass, bootCurveAlpha = 0.05, subjectID = NULL)
 }
 \author{
   %%  ~~who you are~~
-  Philip A Cook <cookpa@mail.med.upenn.edu>
+  Philip A Cook <cookpa@pennmedicine.upenn.edu>
 }
 \note{
 %%  ~~further notes~~
