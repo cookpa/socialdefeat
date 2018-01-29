@@ -92,7 +92,7 @@ bootstrapEM_Class <- function(latency, its=1000, stratification="initial", model
         stratifyInitial <- TRUE
         stratifyProbabilistic <- FALSE
     }
-    else if (tolower(stratification) == "prob") {
+    else if (tolower(stratification) == "probabilistic") {
         stratifyInitial <- FALSE
         stratifyProbabilistic <- TRUE
     }
@@ -376,7 +376,7 @@ bootstrapClusterClass <- function(latency, its=1000, stratification="initial", a
         stratifyInitial <- TRUE
         stratifyProbabilistic <- FALSE
     }
-    else if (tolower(stratification) == "prob") {
+    else if (tolower(stratification) == "probabilistic") {
         stratifyInitial <- FALSE
         stratifyProbabilistic <- TRUE
     }
