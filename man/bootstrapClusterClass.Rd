@@ -14,7 +14,7 @@
   
 }
 \usage{
-bootstrapClusterClass(latency, its = 1000, restratify = FALSE,
+bootstrapClusterClass(latency, its = 1000, stratification = "initial",
 algorithm=c("kmeans", "hc", "pam"), emModelNames = "E") 
 }
 %- maybe also 'usage' for other objects documented here.
@@ -27,23 +27,29 @@ algorithm=c("kmeans", "hc", "pam"), emModelNames = "E")
     Number of bootstrap iterations.
     %%     ~~Describe \code{its} here~~
   }
-  \item{restratify}{
-    If TRUE, classify the data with \code{Mclust} and resample the
-    original classification probabilistically. By default, the
-    proportion of SL / LL in each bootstrap is fixed, based on the
-    original classification (the prior). Optionally, we can resample the
-    groups by using the prior probabilities from an EM clustering.  
+  \item{stratification}{
+    By default ("initial"), the proportion of SL / LL in each bootstrap
+    is fixed, based on the original classification (the
+    prior). This helps stabilize the bootstrap fit if the distribution
+    is skewed such that there are relatively few SL or LL samples. We
+    want to avoid producing bootstraps that contain few or no samples
+    from one of the groups.
     
-    This allows us to vary the stratification according to uncertainty
-    in the prior classification.
+    If "probabilistic", classify the data with \code{Mclust} and
+    resample the original classification probabilistically. This allows
+    us to vary the stratification according to uncertainty in the prior
+    classification. 
     
     For example, consider the subjects (A,B,C,D,E) with prior
     probabilities (0, 0.05, 0.45, 0.95, 1). This contains 3 SL and 2 LL.
     But if we resample the groups using these probabilities, we will
     classify A as LL with probability 0, B with probability 0.05, C with
     probability 0.45, and so on.
-    
-    %%     ~~Describe \code{restratify} here~~
+
+    If "none", the stratification is disabled and the bootstraps are
+    produced by randomly sampling the original data with replacement,
+    without regard to the initial classification. 
+ 
   }
   \item{algorithm}{
     The clustering algorithm. By default, calls \code{kmeans} from the

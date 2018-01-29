@@ -38,7 +38,7 @@ emProbLL <- function(clusters, latency) {
 
 
 
-bootstrapEM_Class <- function(latency, its=1000, restratify=FALSE, modelNames = "E") {
+bootstrapEM_Class <- function(latency, its=1000, stratification="initial", modelNames = "E") {
     
     # The prior groups are used to stratify the bootstrap, which maintains a consistent fraction of LL and SL
     # in each bootstrap.
@@ -80,31 +80,61 @@ bootstrapEM_Class <- function(latency, its=1000, restratify=FALSE, modelNames = 
     priorLL <- which(priorProbLL > 0.5)
     priorSL <- which(priorProbLL <= 0.5)
 
+
+    stratifyInitial <- TRUE
+    stratifyProbabilistic <- FALSE
+
+    if (tolower(stratification) == "none") {
+        stratifyInitial <- FALSE
+        stratifyProbabilistic <- FALSE
+    }
+    else if (tolower(stratification) == "initial") {
+        stratifyInitial <- TRUE
+        stratifyProbabilistic <- FALSE
+    }
+    else if (tolower(stratification) == "prob") {
+        stratifyInitial <- FALSE
+        stratifyProbabilistic <- TRUE
+    }
+    else {
+        stop(paste("Unrecognized stratification option ", stratification, sep = ""))
+    }
+    
+    
     for (i in 1:its) {
 
-        bootPriorLL <- priorLL
-        bootPriorSL <- priorSL
-        
-        # Do stratified sampling
-        if (restratify) {
-            isLL <- vector("numeric", numSubj)
+
+        # boot is a collection of indices to sample, latencies are latencies[boot]      
+        boot <- c()
+
+        if (stratifyInitial || stratifyProbabilistic) {
+            bootPriorLL <- priorLL
+            bootPriorSL <- priorSL
             
-            for (n in 1:numSubj) {
-                isLL[n] <- rbinom(1,1, priorProbLL[n])
+            if (stratifyProbabilistic) {
+                isLL <- vector("numeric", numSubj)
+                
+                for (n in 1:numSubj) {
+                    isLL[n] <- rbinom(1,1, priorProbLL[n])
+                }
+                
+                isLL <- as.logical(isLL)
+                
+                bootPriorLL <- which(isLL)
+                bootPriorSL <- which(!isLL)
+                
             }
-
-            isLL <- as.logical(isLL)
-
-            bootPriorLL <- which(isLL)
-            bootPriorSL <- which(!isLL)
-
+            
+            bootLL <- sample(bootPriorLL, replace = TRUE)
+            bootSL <- sample(bootPriorSL, replace = TRUE)
+            
+            boot <- c(bootLL, bootSL)
         }
-
-        bootLL <- sample(bootPriorLL, replace = TRUE)
-        bootSL <- sample(bootPriorSL, replace = TRUE)
-
-        boot <- c(bootLL, bootSL)
-
+        else {
+            # Sample the full array of input latencies without regard to initial classification
+            boot <- sample(1:numSubj, replace = TRUE)
+        }
+            
         clusters_boot <- Mclust(latency[boot], G = 2, modelNames = modelNames)
 
         LL_index <- 2
@@ -159,10 +189,6 @@ bootstrapEM_Class <- function(latency, its=1000, restratify=FALSE, modelNames = 
     }
 
 
-    # FIX ME
-    # Compute boundary point here and return it, instead of at plot stage
-
-    
     stuff <- list(bootProbLL = bootProbLL, bootThreshLL = LL_thresh, clusters = clusters, em_mean = em_mean, em_mix = em_mix, em_std = em_std, its = its, latency = latency, priorProbLL = priorProbLL, r_boot = r_boot, r_curve_boot = r_curve_boot)
 
     return(stuff)
@@ -268,7 +294,7 @@ plotBootstrapEM_Class <- function(bootClass, bootCurveAlpha = 0.05, subjectID = 
 
 
 
-bootstrapClusterClass <- function(latency, its=1000, restratify=FALSE, algorithm=c("kmeans", "hc", "pam"), emModelNames = "E") {
+bootstrapClusterClass <- function(latency, its=1000, stratification="initial", algorithm=c("kmeans", "hc", "pam"), emModelNames = "E") {
 
     # Does clustering with either the original kmeans (stats), hierarchical clustering (mclust) or pam (cluster)
     
@@ -337,10 +363,28 @@ bootstrapClusterClass <- function(latency, its=1000, restratify=FALSE, algorithm
     minLL <- min(latency[LL])
     maxSL <- max(latency[SL])
 
-    boundary <- maxSL + (minLL - maxSL) / 2
+    boundary <- (centers[1] + centers[2]) / 2
 
+    stratifyInitial <- TRUE
+    stratifyProbabilistic <- FALSE
+
+    if (tolower(stratification) == "none") {
+        stratifyInitial <- FALSE
+        stratifyProbabilistic <- FALSE
+    }
+    else if (tolower(stratification) == "initial") {
+        stratifyInitial <- TRUE
+        stratifyProbabilistic <- FALSE
+    }
+    else if (tolower(stratification) == "prob") {
+        stratifyInitial <- FALSE
+        stratifyProbabilistic <- TRUE
+    }
+    else {
+        stop(paste("Unrecognized stratification option ", stratification, sep = ""))
+    }
     
-    if (restratify) {
+    if (stratifyProbabilistic) {
         clusters <- Mclust(latency, G = 2, modelNames = emModelNames)
         priorProbLL <- emProbLL(clusters, latency)
     }
@@ -352,7 +396,7 @@ bootstrapClusterClass <- function(latency, its=1000, restratify=FALSE, algorithm
     # Record classification for samples used in each bootstrap
     class_boot <- matrix(nrow = numSubj, ncol = its)
 
-    # Approximate decision boundary as halfway between longest SL and shortest LL latency in each bootstrap
+    # Decision boundary for each bootstrap
     boundary_boot <- matrix(nrow = 1, ncol = its)
     
     priorLL <- which(priorProbLL > 0.5)
@@ -360,29 +404,38 @@ bootstrapClusterClass <- function(latency, its=1000, restratify=FALSE, algorithm
 
     for (i in 1:its) {
 
-        bootPriorLL <- priorLL
-        bootPriorSL <- priorSL
-        
-        if (restratify) {
-            isLL <- vector("numeric", numSubj)
+        # boot is a collection of indices to sample, latencies are latencies[boot]      
+        boot <- c()
+
+        if (stratifyInitial || stratifyProbabilistic) {
             
-            for (n in 1:numSubj) {
+            bootPriorLL <- priorLL
+            bootPriorSL <- priorSL
+            
+            if (stratifyProbabilistic) {
+                isLL <- vector("numeric", numSubj)
+                
+                for (n in 1:numSubj) {
                 isLL[n] <- rbinom(1,1, priorProbLL[n])
+                }
+                
+                isLL <- as.logical(isLL)
+                
+                bootPriorLL <- which(isLL)
+                bootPriorSL <- which(!isLL)
             }
+        
+            bootLL <- sample(bootPriorLL, replace = TRUE)
+            bootSL <- sample(bootPriorSL, replace = TRUE)
             
-            isLL <- as.logical(isLL)
-            
-            bootPriorLL <- which(isLL)
-            bootPriorSL <- which(!isLL)
+            boot <- c(bootLL, bootSL)
             
         }
-        
-        bootLL <- sample(bootPriorLL, replace = TRUE)
-        bootSL <- sample(bootPriorSL, replace = TRUE)
-
-        # boot is a collection of indices to sample, latencies are latencies[boot]      
-        boot <- c(bootLL, bootSL)
-        
+        else {
+            # Sample the full array of input latencies without regard to initial classification
+            boot <- sample(1:numSubj, replace = TRUE)
+        }
+            
         centersBoot <- NULL
 
         clustersBoot <- NULL
