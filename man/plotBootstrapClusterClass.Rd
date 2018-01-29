@@ -54,7 +54,7 @@ plotBootstrapClusterClass(bootClass, bootBoundaryAlpha = 0.05, subjectID = NULL)
     defined as halfway between the SL subject with the longest latency, 
     and the LL subject with the shortest latency.
 
-   
+    
     \item Bootstrap stress-resilience probabilities
 
     This bar plot shows, for each subject, the LL probabilities derived
@@ -68,21 +68,21 @@ plotBootstrapClusterClass(bootClass, bootBoundaryAlpha = 0.05, subjectID = NULL)
   
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+  %%  ~Describe the value returned
+  %%  If it is a LIST, use
+  %%  \item{comp1 }{Description of 'comp1'}
+  %%  \item{comp2 }{Description of 'comp2'}
+  %% ...
 }
 \references{
-%% ~put references to the literature/web site here ~
+  %% ~put references to the literature/web site here ~
 }
 \author{
   %%  ~~who you are~~
   Philip A Cook <cookpa@pennmedicine.upenn.edu>
 }
 \note{
-%%  ~~further notes~~
+  %%  ~~further notes~~
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~

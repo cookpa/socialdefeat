@@ -2,13 +2,13 @@
 \alias{bootstrapClusterClass}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Bootstrap analysis of clustering algorithms
-%%  ~~function to do ... ~~
+  %%  ~~function to do ... ~~
 }
 \description{
   %%  ~~ A concise (1-5 lines) description of what the function does. ~~
   Performs classification with \code{kmeans}, \code{hc} or \code{pam},
   then estimates uncertainty via  bootstrap resampling. 
-
+  
   Bootstrap resampling is stratified such that the proportion of short
   and long latency in each bootstrap remains constant.
   
@@ -84,8 +84,8 @@ algorithm=c("kmeans", "hc", "pam"), emModelNames = "E")
   %%  ~Describe the value returned
   A list with the following components
 
-% stuff <- list(bootProbLL = bootProbLL, its = its, latency = latency, kBoundary = kBoundary, k_boundary_boot = k_boundary_boot, kCenters = kCenters, k_class_boot = k_class_boot, kClusters = kClusters)
- 
+  % stuff <- list(bootProbLL = bootProbLL, its = its, latency = latency, kBoundary = kBoundary, k_boundary_boot = k_boundary_boot, kCenters = kCenters, k_class_boot = k_class_boot, kClusters = kClusters)
+  
   \item{bootProbLL }{The probability that a subject is classified as LL,
     defined as the number of times this subject was classified LL over all
     bootstraps.}
@@ -102,22 +102,22 @@ algorithm=c("kmeans", "hc", "pam"), emModelNames = "E")
     data at each bootstrap.} 
   \item{clusters }{The classification of the original data: 1 (SL), 2
     (LL).}
- 
- The ordering of the per-subject values (such as bootProbLL) is the same
- as in the latency vector.
+  
+  The ordering of the per-subject values (such as bootProbLL) is the same
+  as in the latency vector.
 
- The cluster boundaries are defined as halfway between the two cluster
- means at each bootstrap.
+  The cluster boundaries are defined as halfway between the two cluster
+  means at each bootstrap.
 
 }
 \references{
-%% ~put references to the literature/web site here ~
+  %% ~put references to the literature/web site here ~
 }
 \author{
   Philip A Cook <cookpa@pennmedicine.upenn.edu>
 }
 \note{
-%%  ~~further notes~~
+  %%  ~~further notes~~
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~

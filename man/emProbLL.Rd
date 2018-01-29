@@ -19,7 +19,7 @@ emProbLL(clusters, latency)
   \item{clusters}{
     An object of class \code{Mclust}, which should contain a two-class
     Gaussian mixture model fit to average latency data.
-}
+  }
   \item{latency}{
     A vector of average latencies. The probability of LL classification
     is computed for each entry.
@@ -32,9 +32,9 @@ emProbLL(clusters, latency)
   A vector containing LL probabilities for each input latency.
   %%  ~Describe the value returned
   %%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
+  %%  \item{comp1 }{Description of 'comp1'}
+  %%  \item{comp2 }{Description of 'comp2'}
+  %% ...
 }
 \references{
   %% ~put references to the literature/web site here ~
@@ -44,13 +44,13 @@ emProbLL(clusters, latency)
   Philip A Cook <cookpa@pennmedicine.upenn.edu>
 }
 \note{
-%%  ~~further notes~~
+  %%  ~~further notes~~
 }
 
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+  %% ~~objects to See Also as \code{\link{help}}, ~~~
 }
 \examples{
 

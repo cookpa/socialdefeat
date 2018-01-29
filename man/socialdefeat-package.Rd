@@ -3,7 +3,7 @@
 \alias{socialdefeat}
 \docType{package}
 \title{
-Package for analyzing social defeat data
+  Package for analyzing social defeat data
 }
 \description{
   Contains code for analysis of social defeat data.

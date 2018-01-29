@@ -76,6 +76,11 @@ Now you are ready to install:
  
     help(package = socialdefeat)
 
+Read the function man pages for EM classification (recommended) or clustering-based classification.
+
+The bootstrap methods return an initial classification as well as the bootstrap results.
+
+For production purposes, use at least 1000 iterations and preferably 10000.
 
 
 ## Uninstall
